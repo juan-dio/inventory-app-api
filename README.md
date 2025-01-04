@@ -1,66 +1,321 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Inventory App API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Base URL
 
-## About Laravel
+`https://127.0.0.1:8000/api`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Authentication
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Semua route yang dilindungi memerlukan token Bearer. Token diberikan setelah berhasil login.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Headers
 
-## Learning Laravel
+```plaintext
+Authorization: Bearer <auth_token>
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Endpoints
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Login
 
-## Laravel Sponsors
+**POST** `/login`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Request Body
 
-### Premium Partners
+```json
+{
+    "email": "string",
+    "password": "string"
+}
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+#### Response
 
-## Contributing
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": {
+            "token": "string"
+        },
+        "message": "Login berhasil"
+    }
+    ```
+-   **Failure**:
+    ```json
+    {
+        "status": false,
+        "data": null,
+        "message": "Login gagal"
+    }
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### 2. Logout
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**POST** `/logout`
 
-## Security Vulnerabilities
+#### Request Headers
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```plaintext
+Authorization: Bearer <auth_token>
+```
 
-## License
+#### Response
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": null,
+        "message": "logout berhasil"
+    }
+    ```
+
+---
+
+### 3. Get Profile
+
+**GET** `/profile`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": {
+            "id": "integer",
+            "name": "string",
+            "email": "string",
+            "created_at": "timestamp",
+            "updated_at": "timestamp"
+        },
+        "message": "Sukses mendapatkan data user"
+    }
+    ```
+
+---
+
+### 4. Update Profile
+
+**PUT** `/profile`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Request Body
+
+```json
+{
+    "name": "string",
+    "email": "string"
+}
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": "integer user->id",
+        "message": "Sukses mengubah data user"
+    }
+    ```
+
+---
+
+### 5. Add Inventory
+
+**POST** `/inventory`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Request Body
+
+```json
+{
+    "name": "string",
+    "stock": "integer"
+}
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": "integer inventory->id",
+        "message": "Sukses menambahkan inventory"
+    }
+    ```
+
+---
+
+### 6. Update Inventory
+
+**PUT** `/inventory/{id}`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Request Body
+
+```json
+{
+    "name": "string",
+    "stock": "integer"
+}
+```
+
+#### Response
+
+-   **Success**:
+
+    ```json
+    {
+        "status": true,
+        "data": "integer user->id",
+        "message": "Sukses mengubah inventory"
+    }
+    ```
+
+-   **Failure**:
+    ```json
+    {
+        "status": false,
+        "data": null,
+        "message": "Gagal mengubah inventory"
+    }
+    ```
+
+---
+
+### 7. Delete Inventory
+
+**DELETE** `/inventory/{id}`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": null,
+        "message": "Sukses menghapus inventory"
+    }
+    ```
+-   **Failure**:
+    ```json
+    {
+        "status": false,
+        "data": null,
+        "message": "Gagal menghapus inventory"
+    }
+    ```
+
+---
+
+### 8. List Inventory
+
+**GET** `/inventory`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": {
+            "users": [
+                {
+                    "id": "integer",
+                    "name": "string",
+                    "email": "string",
+                    "created_at": "timestamp",
+                    "updated_at": "timestamp"
+                }
+            ],
+            "inventories": [
+                {
+                    "id": "integer",
+                    "name": "string",
+                    "stock": "integer",
+                    "created_at": "timestamp",
+                    "updated_at": "timestamp"
+                }
+            ]
+        },
+        "message": "Sukses menampilkan semua inventory"
+    }
+    ```
+
+---
+
+### 9. Get Inventory by ID
+
+**GET** `/inventory/{id}`
+
+#### Request Headers
+
+```plaintext
+Authorization: Bearer <auth_token>
+```
+
+#### Response
+
+-   **Success**:
+    ```json
+    {
+        "status": true,
+        "data": {
+            "id": "integer",
+            "name": "string",
+            "stock": "integer",
+            "created_at": "timestamp",
+            "updated_at": "timestamp"
+        },
+        "message": "Sukses menampilkan inventory"
+    }
+    ```
+-   **Failure**:
+    ```json
+    {
+        "status": false,
+        "data": null,
+        "message": "Gagal menampilkan inventory"
+    }
+    ```
